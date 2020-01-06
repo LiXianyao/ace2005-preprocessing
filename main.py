@@ -7,6 +7,14 @@ from stanfordcorenlp import StanfordCoreNLP
 import argparse
 from tqdm import tqdm
 
+CHINESE_PROPERTIES = {
+    "tokenize.language": "zh",
+    "segment.model": "edu/stanford/nlp/models/segmenter/chinese/ctb.gz", "segment.sighanCorporaDict": "edu/stanford/nlp/models/segmenter/chinese", "segment.serDictionary": "edu/stanford/nlp/models/segmenter/chinese/dict-chris6.ser.gz", "segment.sighanPostProcessing": "true",
+    "ssplit.boundaryTokenRegex": "[.。]|[!?！？]+",
+    "pos.model": "edu/stanford/nlp/models/pos-tagger/chinese-distsim/chinese-distsim.tagger",
+    "parse.model": "edu/stanford/nlp/models/srparser/chineseSR.ser.gz"
+}
+
 def str2bool(v):
     # copy from StackOverflow
     if v.lower() in ('yes', 'true', 't', 'y', '1'):
@@ -98,9 +106,10 @@ def verify_result(data):
     print('Complete verification')
 
 
-def preprocessing(data_type, files, withValue):
+def preprocessing(data_type, files, withValue, lang):
     result = []
     event_count, entity_count, sent_count, argument_count = 0, 0, 0, 0
+    properties = CHINESE_PROPERTIES if lang=='zh' else {'timeout': '990000','annotators': 'tokenize,ssplit,pos,lemma,parse'}
 
     print('=' * 20)
     print('[preprocessing] type: ', data_type)
@@ -118,7 +127,7 @@ def preprocessing(data_type, files, withValue):
             data['golden-event-mentions'] = []
 
             try:
-                nlp_res_raw = nlp.annotate(item['sentence'], properties={'timeout': '990000','annotators': 'tokenize,ssplit,pos,lemma,parse'})
+                nlp_res_raw = nlp.annotate(item['sentence'], properties=properties)
                 nlp_res = json.loads(nlp_res_raw)
             except Exception as e:
                 print('[Warning] StanfordCore Exception: ', nlp_res_raw, 'This sentence will be ignored.')
@@ -222,6 +231,6 @@ if __name__ == '__main__':
     with StanfordCoreNLP(args.host, memory='8g', timeout=60000, lang=args.lang, port=args.port) as nlp:
         # res = nlp.annotate('Donald John Trump is current president of the United States.', properties={'annotators': 'tokenize,ssplit,pos,lemma,parse'})
         # print(res)
-        preprocessing('dev', dev_files, args.withValue)
-        preprocessing('test', test_files, args.withValue)
-        preprocessing('train', train_files, args.withValue)
+        preprocessing('dev', dev_files, args.withValue, args.lang)
+        preprocessing('test', test_files, args.withValue, args.lang)
+        preprocessing('train', train_files, args.withValue, args.lang)
