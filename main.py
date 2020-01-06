@@ -117,29 +117,29 @@ def preprocessing(data_type, files, withValue):
             data['golden-entity-mentions'] = []
             data['golden-event-mentions'] = []
 
-            #try:
-            #    nlp_res_raw = nlp.annotate(item['sentence'], properties={'timeout': '990000','annotators': 'tokenize,ssplit,pos,lemma,parse'})
-            #    nlp_res = json.loads(nlp_res_raw)
-            #except Exception as e:
-            #    print('[Warning] StanfordCore Exception: ', nlp_res_raw, 'This sentence will be ignored.')
-            #    print('If you want to include all sentences, please refer to this issue: https://github.com/nlpcl-lab/ace2005-preprocessing/issues/1')
-            #    continue
+            try:
+                nlp_res_raw = nlp.annotate(item['sentence'], properties={'timeout': '990000','annotators': 'tokenize,ssplit,pos,lemma,parse'})
+                nlp_res = json.loads(nlp_res_raw)
+            except Exception as e:
+                print('[Warning] StanfordCore Exception: ', nlp_res_raw, 'This sentence will be ignored.')
+                print('If you want to include all sentences, please refer to this issue: https://github.com/nlpcl-lab/ace2005-preprocessing/issues/1')
+                continue
 
-            #tokens = nlp_res['sentences'][0]['tokens']
+            tokens = nlp_res['sentences'][0]['tokens']
 
-            #if len(nlp_res['sentences']) >= 2:
+            if len(nlp_res['sentences']) >= 2:
                 # TODO: issue where the sentence segmentation of NTLK and StandfordCoreNLP do not match
                 # This error occurred so little that it was temporarily ignored (< 20 sentences).
-            #    continue
+                continue
 
             data['stanford-colcc'] = []
-            for dep in nlp.dependency_parse(item['sentence']):
-                data['stanford-colcc'].append('{}/dep={}/gov={}'.format(dep[0], dep['dependent'] - 1, dep['governor'] - 1))
+            for dep in nlp_res['sentences'][0]['enhancedPlusPlusDependencies']:
+                data['stanford-colcc'].append('{}/dep={}/gov={}'.format(dep['dep'], dep['dependent'] - 1, dep['governor'] - 1))
 
-            data['words'] = nlp.word_tokenize(item['sentence'])  # list(map(lambda x: x['word'], tokens))
-            data['pos-tags'] = nlp.pos_tag(item['sentence'])  # list(map(lambda x: x['pos'], tokens))
-            #data['lemma'] = list(map(lambda x: x['lemma'], tokens))
-            data['parse'] = nlp.parse(item["sentence"]) # nlp_res['sentences'][0]['parse']
+            data['words'] = list(map(lambda x: x['word'], tokens))
+            data['pos-tags'] = list(map(lambda x: x['pos'], tokens))
+            data['lemma'] = list(map(lambda x: x['lemma'], tokens))
+            data['parse'] = nlp_res['sentences'][0]['parse']
 
             sent_start_pos = item['position'][0]
 
@@ -213,11 +213,13 @@ if __name__ == '__main__':
     parser.add_argument('--data', help="Path of ACE2005 English data", default='./data/ace_2005_td_v7/data/English')
     parser.add_argument('--withValue', help="with or without ACE VALUE orTIME as ENTITY", default=True, type=str2bool)
     parser.add_argument('--lang', help="english or chinese corpus", default='en')
+    parser.add_argument('--host', help="Server Address for StanfordCoreNlp", default='./stanford-corenlp-full-2018-10-05')
+    parser.add_argument('--port', help="Server port for StanfordCoreNlp", default=9000, type=int)
 
     args = parser.parse_args()
     test_files, dev_files, train_files = get_data_paths(args.data, args.lang)
 
-    with StanfordCoreNLP('./stanford-corenlp-full-2018-10-05', memory='8g', timeout=60000, lang=args.lang) as nlp:
+    with StanfordCoreNLP(args.host, memory='8g', timeout=60000, lang=args.lang, port=args.port) as nlp:
         # res = nlp.annotate('Donald John Trump is current president of the United States.', properties={'annotators': 'tokenize,ssplit,pos,lemma,parse'})
         # print(res)
         preprocessing('dev', dev_files, args.withValue)
