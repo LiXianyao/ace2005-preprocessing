@@ -6,11 +6,13 @@ import re
 
 
 class Parser:
-    def __init__(self, path):
+    def __init__(self, path, withValue):
         self.path = path
         self.entity_mentions = []
         self.event_mentions = []
         self.sentences = []
+        self.withValue = withValue
+        print("ACE Value and Time are include?: {}".format(withValue))
         self.sgm_text = ''
 
         self.entity_mentions, self.event_mentions = self.parse_xml(path + '.apf.xml')
@@ -127,12 +129,20 @@ class Parser:
                 for tag in tags:
                     tag.extract()
 
+            remove_tags('datetime')
             if doc_type == 'WEB TEXT':
                 remove_tags('poster')
                 remove_tags('postdate')
                 remove_tags('subject')
             elif doc_type in ['CONVERSATION', 'STORY']:
                 remove_tags('speaker')
+
+            try:
+                remove_tags('headline')
+                remove_tags('endtime')
+            except:
+                pass
+
 
             sents = []
             converted_text = soup.text
@@ -161,7 +171,7 @@ class Parser:
         for child in root[0]:
             if child.tag == 'entity':
                 entity_mentions.extend(self.parse_entity_tag(child))
-            elif child.tag in ['value', 'timex2']:
+            elif self.withValue and child.tag in ['value', 'timex2']:
                 entity_mentions.extend(self.parse_value_timex_tag(child))
             elif child.tag == 'event':
                 event_mentions.extend(self.parse_event_tag(child))
