@@ -1,7 +1,9 @@
+#-*-encoding:utf8-*-#
 from xml.etree import ElementTree
 from bs4 import BeautifulSoup
 import nltk
 import json
+from utils import removeNextLineAndSpace, calculateSkipPos, findNext
 import re
 
 
@@ -14,9 +16,10 @@ class Parser:
         self.withValue = withValue
         print("ACE Value and Time are include?: {}".format(withValue))
         self.sgm_text = ''
+        self.remove_list = []
 
-        self.entity_mentions, self.event_mentions = self.parse_xml(path + '.apf.xml')
         self.sents_with_pos = self.parse_sgm(path + '.sgm')
+        self.entity_mentions, self.event_mentions = self.parse_xml(path + '.apf.xml')
         self.fix_wrong_position()
 
     @staticmethod
@@ -31,11 +34,6 @@ class Parser:
             item['sentence'] = self.clean_text(sent['text'])
             item['position'] = sent['position']
             text_position = sent['position']
-
-            for i, s in enumerate(item['sentence']):
-                if s != ' ':
-                    item['position'][0] += i
-                    break
 
             item['sentence'] = item['sentence'].strip()
 
@@ -89,7 +87,7 @@ class Parser:
                     return offset
 
         print('[Warning] fail to find offset! (start_index: {}, text: {}, path: {})'.format(start_index, text, self.path))
-        return offset
+        return 0
 
     def fix_wrong_position(self):
         for entity_mention in self.entity_mentions:
@@ -147,21 +145,45 @@ class Parser:
             sents = []
             converted_text = soup.text
 
-            for sent in nltk.sent_tokenize(converted_text):
+            for sent in self.sent_tokenize(converted_text):
                 sents.extend(sent.split('\n\n'))
             sents = list(filter(lambda x: len(x) > 5, sents))
             sents = sents[1:]
             sents_with_pos = []
             last_pos = 0
+
             for sent in sents:
                 pos = self.sgm_text.find(sent, last_pos)
                 last_pos = pos
+
+                usedPos = len(self.remove_list)
+                cleanText, remove_idxs = removeNextLineAndSpace(sent, sgmPos=pos)
+                self.remove_list.extend(remove_idxs)
+
+                startPos = calculateSkipPos(self.remove_list[usedPos:], pos)
+                endPos = calculateSkipPos(self.remove_list[usedPos:], pos + len(sent))
+                print(len(cleanText))
+                assert endPos - startPos == len(cleanText)
+
+                self.sgm_text = self.sgm_text[:pos] + cleanText + self.sgm_text[pos + len(sent):]
+
                 sents_with_pos.append({
-                    'text': sent,
-                    'position': [pos, pos + len(sent)]
+                    'text': cleanText,
+                    'position': [startPos, endPos]
                 })
 
             return sents_with_pos
+
+    def sent_tokenize(self, sent):
+        idx = findNext(sent, pos=0, delimiters=["。", "！", "……"])
+        last_idx = 0
+
+        while idx != -1:
+            yield sent[last_idx: idx + 1]
+            last_idx = idx + 1
+            idx = findNext(sent, pos=idx + 1, delimiters=["。", "！", "……"])
+        yield sent[last_idx:]
+
 
     def parse_xml(self, xml_path):
         entity_mentions, event_mentions = [], []
@@ -178,8 +200,7 @@ class Parser:
 
         return entity_mentions, event_mentions
 
-    @staticmethod
-    def parse_entity_tag(node):
+    def parse_entity_tag(self, node):
         entity_mentions = []
 
         for child in node:
@@ -191,15 +212,19 @@ class Parser:
             entity_mention = dict()
             entity_mention['entity-id'] = child.attrib['ID']
             entity_mention['entity-type'] = '{}:{}'.format(node.attrib['TYPE'], node.attrib['SUBTYPE'])
-            entity_mention['text'] = charset.text
-            entity_mention['position'] = [int(charset.attrib['START']), int(charset.attrib['END'])]
+            cleanText, _ = removeNextLineAndSpace(charset.text, 0)
+            entity_mention['text'] = cleanText
+
+            startPos = calculateSkipPos(self.remove_list, int(charset.attrib['START']))
+            endPos = calculateSkipPos(self.remove_list, int(charset.attrib['END']))
+            entity_mention['position'] = [startPos, endPos]
 
             entity_mentions.append(entity_mention)
 
         return entity_mentions
 
-    @staticmethod
-    def parse_event_tag(node):
+
+    def parse_event_tag(self, node):
         event_mentions = []
         for child in node:
             if child.tag == 'event_mention':
@@ -207,30 +232,39 @@ class Parser:
                 event_mention['event_type'] = '{}:{}'.format(node.attrib['TYPE'], node.attrib['SUBTYPE'])
                 event_mention['arguments'] = []
                 for child2 in child:
+                    def removeUnused(charset):
+                        cleanText, _ = removeNextLineAndSpace(charset.text, 0)
+                        startPos = calculateSkipPos(self.remove_list, int(charset.attrib['START']))
+                        endPos = calculateSkipPos(self.remove_list, int(charset.attrib['END']))
+                        return cleanText, startPos, endPos
+
                     if child2.tag == 'ldc_scope':
                         charset = child2[0]
-                        event_mention['text'] = charset.text
-                        event_mention['position'] = [int(charset.attrib['START']), int(charset.attrib['END'])]
-                    if child2.tag == 'anchor':
+                        cleanText, startPos, endPos = removeUnused(charset)
+                        event_mention['text'] = cleanText
+                        event_mention['position'] = [startPos, endPos]
+                    elif child2.tag == 'anchor':
                         charset = child2[0]
+                        cleanText, startPos, endPos = removeUnused(charset)
                         event_mention['trigger'] = {
-                            'text': charset.text,
-                            'position': [int(charset.attrib['START']), int(charset.attrib['END'])],
+                            'text': cleanText,
+                            'position': [startPos, endPos],
                         }
-                    if child2.tag == 'event_mention_argument':
+                    elif child2.tag == 'event_mention_argument':
                         extent = child2[0]
                         charset = extent[0]
+                        cleanText, startPos, endPos = removeUnused(charset)
                         event_mention['arguments'].append({
-                            'text': charset.text,
-                            'position': [int(charset.attrib['START']), int(charset.attrib['END'])],
+                            'text': cleanText,
+                            'position': [startPos, endPos],
                             'role': child2.attrib['ROLE'],
                             'entity-id': child2.attrib['REFID'],
                         })
                 event_mentions.append(event_mention)
         return event_mentions
 
-    @staticmethod
-    def parse_value_timex_tag(node):
+
+    def parse_value_timex_tag(self, node):
         entity_mentions = []
 
         for child in node:
@@ -247,8 +281,12 @@ class Parser:
             if child.tag == 'timex2_mention':
                 entity_mention['entity-type'] = 'TIM:time'
 
-            entity_mention['text'] = charset.text
-            entity_mention['position'] = [int(charset.attrib['START']), int(charset.attrib['END'])]
+            cleanText, _ = removeNextLineAndSpace(charset.text, 0)
+            entity_mention['text'] = cleanText
+
+            startPos = calculateSkipPos(self.remove_list, int(charset.attrib['START']))
+            endPos = calculateSkipPos(self.remove_list, int(charset.attrib['END']))
+            entity_mention['position'] = [startPos, endPos]
 
             entity_mentions.append(entity_mention)
 
@@ -257,10 +295,10 @@ class Parser:
 
 if __name__ == '__main__':
     # parser = Parser('./data/ace_2005_td_v7/data/English/un/fp2/alt.gossip.celebrities_20041118.2331')
-    parser = Parser('./data/ace_2005_td_v7/data/English/un/timex2norm/alt.corel_20041228.0503')
+    parser = Parser('./data/ace_2005_td_v7/data/Chinese/bn/adj/CTS20001206.1300.0398', True)
     data = parser.get_data()
-    with open('./output/debug.json', 'w') as f:
-        json.dump(data, f, indent=2)
+    with open('./output/debugC.json', 'w', encoding='utf-8') as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
 
     # index = parser.sgm_text.find("Diego Garcia")
     # print('index :', index)
