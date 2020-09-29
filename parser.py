@@ -14,13 +14,15 @@ class Parser:
         self.event_mentions = []
         self.sentences = []
         self.withValue = withValue
-        print("ACE Value and Time are include?: {}".format(withValue))
+        #print("ACE Value and Time are include?: {}".format(withValue))
         self.sgm_text = ''
         self.remove_list = []
 
         self.sents_with_pos = self.parse_sgm(path + '.sgm')
         self.entity_mentions, self.event_mentions = self.parse_xml(path + '.apf.xml')
         self.fix_wrong_position()
+        if len(self.entity_mentions) == 0 or len(self.sents_with_pos) == 0:
+            print('[Warning!!] No sents or entities were found in file {}'.format(path))
 
     @staticmethod
     def clean_text(text):
@@ -43,7 +45,7 @@ class Parser:
 
             for entity_mention in self.entity_mentions:
                 entity_position = entity_mention['position']
-                if text_position[0] <= entity_position[0] and entity_position[1] <= text_position[1]:
+                if text_position[0] <= entity_position[0] and entity_position[1] < text_position[1]:
                     item['golden-entity-mentions'].append({
                         'text': self.clean_text(entity_mention['text']),
                         'position': entity_position,
@@ -53,13 +55,13 @@ class Parser:
 
             for event_mention in self.event_mentions:
                 event_position = event_mention['trigger']['position']
-                if text_position[0] <= event_position[0] and event_position[1] <= text_position[1]:
+                if text_position[0] <= event_position[0] and event_position[1] < text_position[1]:
                     event_arguments = []
                     for argument in event_mention['arguments']:
                         try:
                             entity_type = entity_map[argument['entity-id']]['entity-type']
                         except KeyError:
-                            print('[Warning] The entity in the other sentence is mentioned. This argument will be ignored.')
+                            # print('[Warning] The entity in the other sentence is mentioned. This argument will be ignored.')
                             continue
 
                         event_arguments.append({
@@ -86,7 +88,8 @@ class Parser:
                 if sgm_text[start_index + offset:start_index + offset + len(text)] == text:
                     return offset
 
-        print('[Warning] fail to find offset! (start_index: {}, text: {}, path: {})'.format(start_index, text, self.path))
+        if start_index > 40:  # 很多个时间戳不在正文里
+            print('[Warning] fail to find offset! (start_index: {}, text: {}, path: {})'.format(start_index, text, self.path))
         return 0
 
     def fix_wrong_position(self):
@@ -162,7 +165,6 @@ class Parser:
 
                 startPos = calculateSkipPos(self.remove_list[usedPos:], pos)
                 endPos = calculateSkipPos(self.remove_list[usedPos:], pos + len(sent))
-                print(len(cleanText))
                 assert endPos - startPos == len(cleanText)
 
                 self.sgm_text = self.sgm_text[:pos] + cleanText + self.sgm_text[pos + len(sent):]
@@ -175,13 +177,13 @@ class Parser:
             return sents_with_pos
 
     def sent_tokenize(self, sent):
-        idx = findNext(sent, pos=0, delimiters=["。", "！", "……"])
+        idx = findNext(sent, pos=0, delimiters=["。", "！", ".", "？"])
         last_idx = 0
 
         while idx != -1:
             yield sent[last_idx: idx + 1]
             last_idx = idx + 1
-            idx = findNext(sent, pos=idx + 1, delimiters=["。", "！", "……"])
+            idx = findNext(sent, pos=idx + 1, delimiters=["。", "！", ".", "？"])
         yield sent[last_idx:]
 
 
