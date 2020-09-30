@@ -55,7 +55,7 @@ def find_token_index(tokens, start_pos, end_pos, phrase):
     chars = ''
 
     def remove_punc(s):
-        s = re.sub(r'[^\w]', '', s)
+        #s = re.sub(r'[^\w]', '', s)
         return s
 
     for i in range(0, len(tokens) - start_idx):
@@ -64,7 +64,8 @@ def find_token_index(tokens, start_pos, end_pos, phrase):
             end_idx = start_idx + i + 1
             break
 
-    assert end_idx != -1, "end_idx: {}, end_pos: {}, phrase: {}, tokens: {}, chars:{}".format(end_idx, end_pos, phrase, tokens, chars)
+    assert end_idx != -1, "start_idx:{} - {}, start_pos: {}, end_idx: {}, end_pos: {}, phrase: {}, tokens: {}, chars:{}".\
+        format(start_idx, tokens[start_idx]['originalText'], start_pos, end_idx, end_pos, phrase, tokens, chars)
     return start_idx, end_idx
 
 
@@ -139,10 +140,15 @@ def preprocessing(data_type, files, withValue, lang, nlp):
             tokens = nlp_res['sentences'][0]['tokens']
 
             if len(nlp_res['sentences']) >= 2:
-                # TODO: issue where the sentence segmentation of NTLK and StandfordCoreNLP do not match
-                # This error occurred so little that it was temporarily ignored (< 20 sentences).
-                print('[Warning!!] sents {} were skip in file {}'.format(item['sentence'], file))
-                continue
+                if nlp_res['sentences'][1]["tokens"][0]["word"] == ".":
+                    # "......"in nlp.annotate will be split into two lines, just ignore
+                    pass
+                else:
+                    # '苏丹.哈桑那尔.伯尔基亚' 会被按 .分开……
+                    # TODO: issue where the sentence segmentation of NTLK and StandfordCoreNLP do not match
+                    # This error occurred so little that it was temporarily ignored (< 20 sentences).
+                    print('[Warning!!] sents {} were skip in file {}'.format(item['sentence'], file))
+                    continue
 
             data['stanford-colcc'] = []
             for dep in nlp_res['sentences'][0]['enhancedPlusPlusDependencies']:
@@ -220,7 +226,7 @@ def preprocessing(data_type, files, withValue, lang, nlp):
     print('entity :', entity_count)
     print('argument:', argument_count)
 
-    verify_result(result)
+    #verify_result(result)
     with open('output_viable/{}.json'.format(data_type), 'w', encoding='utf-8') as f:
         json.dump(result, f, indent=2, ensure_ascii=False)
 
@@ -229,10 +235,12 @@ def testOneFile():
     with StanfordCoreNLP('http://localhost', memory='8g', timeout=60000, lang="zh", port=9000) as nlp:
         # res = nlp.annotate('Donald John Trump is current president of the United States.', properties={'annotators': 'tokenize,ssplit,pos,lemma,parse'})
         # print(res)
-        files = ['./data/ace_2005_td_v7/data/Chinese/bn/adj/CTV20001210.1430.1151',
-                 './data/ace_2005_td_v7/data/Chinese/bn/adj/CTS20001223.1300.0809',
-                 './data/ace_2005_td_v7/data/Chinese/bn/adj/CTS20001222.1300.0723',
-                 './data/ace_2005_td_v7/data/Chinese/wl/adj/DAVYZW_20041223.1020']
+        files = ['./data/ace_2005_td_v7/data/Chinese/wl/adj/GLOVEBX_20050117.0459',
+                 #'./data/ace_2005_td_v7/data/Chinese/bn/adj/CBS20001214.1000.1127',
+                 #'./data/ace_2005_td_v7/data/Chinese/bn/adj/CBS20001117.1000.0341',
+                 #'./data/ace_2005_td_v7/data/Chinese/bn/adj/CBS20001118.1000.0340',
+                 #'./data/ace_2005_td_v7/data/Chinese/bn/adj/CBS20001101.1000.0000',
+                 './data/ace_2005_td_v7/data/Chinese/wl/adj/LANGLANGGARGEN_20050124.1017']
         withValue = True
         lang = 'zh'
         preprocessing('check', files, withValue, lang, nlp)

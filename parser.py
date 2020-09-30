@@ -139,6 +139,8 @@ class Parser:
                 remove_tags('speaker')
 
             try:
+                remove_tags('doctype')
+                remove_tags('docid')
                 remove_tags('headline')
                 remove_tags('endtime')
             except:
@@ -151,7 +153,6 @@ class Parser:
             for sent in self.sent_tokenize(converted_text):
                 sents.extend(sent.split('\n\n'))
             sents = list(filter(lambda x: len(x) > 5, sents))
-            sents = sents[1:]
             sents_with_pos = []
             last_pos = 0
 
@@ -177,13 +178,13 @@ class Parser:
             return sents_with_pos
 
     def sent_tokenize(self, sent):
-        idx = findNext(sent, pos=0, delimiters=["。", "！", ".", "？"])
+        idx, del_len = findNext(sent, pos=0, delimiters=["。", "！", "...", "......", "!", "？"])
         last_idx = 0
 
         while idx != -1:
-            yield sent[last_idx: idx + 1]
-            last_idx = idx + 1
-            idx = findNext(sent, pos=idx + 1, delimiters=["。", "！", ".", "？"])
+            yield sent[last_idx: idx + del_len]
+            last_idx = idx + del_len
+            idx, del_len = findNext(sent, pos=idx + 1, delimiters=["。", "！", "...", "......", "!", "？"])
         yield sent[last_idx:]
 
 
@@ -214,16 +215,24 @@ class Parser:
             entity_mention = dict()
             entity_mention['entity-id'] = child.attrib['ID']
             entity_mention['entity-type'] = '{}:{}'.format(node.attrib['TYPE'], node.attrib['SUBTYPE'])
-            cleanText, _ = removeNextLineAndSpace(charset.text, 0)
+            cleanText, startPos, endPos = self.removeUnused(charset)
             entity_mention['text'] = cleanText
-
-            startPos = calculateSkipPos(self.remove_list, int(charset.attrib['START']))
-            endPos = calculateSkipPos(self.remove_list, int(charset.attrib['END']))
             entity_mention['position'] = [startPos, endPos]
 
             entity_mentions.append(entity_mention)
 
         return entity_mentions
+
+    def removeUnused(self, charset):
+        cleanText, _ = removeNextLineAndSpace(charset.text, 0)
+        if cleanText.find("《") != -1 and cleanText.find("》") == -1:
+            cleanText += "》"
+            charset.attrib['END'] = int(charset.attrib['END']) + 1
+
+        startPos = calculateSkipPos(self.remove_list, int(charset.attrib['START']))
+        endPos = calculateSkipPos(self.remove_list, int(charset.attrib['END']))
+        endPos = max(endPos, startPos + len(cleanText) - 1)
+        return cleanText, startPos, endPos
 
 
     def parse_event_tag(self, node):
@@ -234,20 +243,14 @@ class Parser:
                 event_mention['event_type'] = '{}:{}'.format(node.attrib['TYPE'], node.attrib['SUBTYPE'])
                 event_mention['arguments'] = []
                 for child2 in child:
-                    def removeUnused(charset):
-                        cleanText, _ = removeNextLineAndSpace(charset.text, 0)
-                        startPos = calculateSkipPos(self.remove_list, int(charset.attrib['START']))
-                        endPos = calculateSkipPos(self.remove_list, int(charset.attrib['END']))
-                        return cleanText, startPos, endPos
-
                     if child2.tag == 'ldc_scope':
                         charset = child2[0]
-                        cleanText, startPos, endPos = removeUnused(charset)
+                        cleanText, startPos, endPos = self.removeUnused(charset)
                         event_mention['text'] = cleanText
                         event_mention['position'] = [startPos, endPos]
                     elif child2.tag == 'anchor':
                         charset = child2[0]
-                        cleanText, startPos, endPos = removeUnused(charset)
+                        cleanText, startPos, endPos = self.removeUnused(charset)
                         event_mention['trigger'] = {
                             'text': cleanText,
                             'position': [startPos, endPos],
@@ -255,7 +258,8 @@ class Parser:
                     elif child2.tag == 'event_mention_argument':
                         extent = child2[0]
                         charset = extent[0]
-                        cleanText, startPos, endPos = removeUnused(charset)
+                        cleanText, startPos, endPos = self.removeUnused(charset)
+
                         event_mention['arguments'].append({
                             'text': cleanText,
                             'position': [startPos, endPos],

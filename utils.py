@@ -1,6 +1,6 @@
 def removeNextLineAndSpace(sent, sgmPos):
     last_idx = 0
-    idx = findNext(sent, pos=0, delimiters=["\n", " "])
+    idx, del_len = findNext(sent, pos=0, delimiters=[u"\n", u" ", u"　"])
     cleanText = ''
     remove_idxs = []
 
@@ -9,9 +9,9 @@ def removeNextLineAndSpace(sent, sgmPos):
             remove_idxs.append(idx + sgmPos)
             cleanText += sent[last_idx: idx]
         else:
-            cleanText += sent[last_idx: idx + 1]
-        last_idx = idx + 1
-        idx = findNext(sent, pos=idx + 1, delimiters=["\n", " "])
+            cleanText += sent[last_idx: idx + del_len]
+        last_idx = idx + del_len
+        idx, del_len = findNext(sent, pos=idx + del_len, delimiters=["\n", " ", "　"])
     cleanText += sent[last_idx:]
     return cleanText, remove_idxs
 
@@ -21,8 +21,8 @@ def findNext(sent, pos, delimiters):
     for c in delimiters:
         idx = sent.find(c, pos)
         if idx > -1:
-            ans.append(idx)
-    return min(ans) if len(ans) > 0 else -1
+            ans.append( (idx, len(c)) )
+    return min(ans) if len(ans) > 0 else (-1, 0)
 
 def isSpaceBetweenWords(sent, idx):
     if sent[idx] != ' ' or idx == 0:
