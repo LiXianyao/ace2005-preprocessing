@@ -287,11 +287,8 @@ class Parser:
             if child.tag == 'timex2_mention':
                 entity_mention['entity-type'] = 'TIM:time'
 
-            cleanText, _ = removeNextLineAndSpace(charset.text, 0)
+            cleanText, startPos, endPos = self.removeUnused(charset)
             entity_mention['text'] = cleanText
-
-            startPos = calculateSkipPos(self.remove_list, int(charset.attrib['START']))
-            endPos = calculateSkipPos(self.remove_list, int(charset.attrib['END']))
             entity_mention['position'] = [startPos, endPos]
 
             entity_mentions.append(entity_mention)
@@ -301,7 +298,7 @@ class Parser:
 
 if __name__ == '__main__':
     # parser = Parser('./data/ace_2005_td_v7/data/English/un/fp2/alt.gossip.celebrities_20041118.2331')
-    parser = Parser('./data/ace_2005_td_v7/data/Chinese/bn/adj/CTS20001206.1300.0398', True)
+    parser = Parser('./data/ace_2005_td_v7/data/Chinese/bn/adj/CTS20001005.1800.1458', True)
     data = parser.get_data()
     with open('./output/debugC.json', 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=2, ensure_ascii=False)

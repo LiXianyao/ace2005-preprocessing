@@ -127,6 +127,7 @@ def preprocessing(data_type, files, withValue, lang, nlp):
             data['sentence'] = item['sentence']
             data['golden-entity-mentions'] = []
             data['golden-event-mentions'] = []
+            data['file'] = file
 
             try:
                 nlp_res_raw = nlp.annotate(item['sentence'], properties=properties)
@@ -150,14 +151,14 @@ def preprocessing(data_type, files, withValue, lang, nlp):
                     print('[Warning!!] sents {} were skip in file {}'.format(item['sentence'], file))
                     continue
 
-            data['stanford-colcc'] = []
-            for dep in nlp_res['sentences'][0]['enhancedPlusPlusDependencies']:
-                data['stanford-colcc'].append('{}/dep={}/gov={}'.format(dep['dep'], dep['dependent'] - 1, dep['governor'] - 1))
+            #data['stanford-colcc'] = []
+            #for dep in nlp_res['sentences'][0]['enhancedPlusPlusDependencies']:
+            #    data['stanford-colcc'].append('{}/dep={}/gov={}'.format(dep['dep'], dep['dependent'] - 1, dep['governor'] - 1))
 
             data['words'] = list(map(lambda x: x['word'], tokens))
             data['pos-tags'] = list(map(lambda x: x['pos'], tokens))
-            data['lemma'] = list(map(lambda x: x['lemma'], tokens))
-            data['parse'] = nlp_res['sentences'][0]['parse']
+            #data['lemma'] = list(map(lambda x: x['lemma'], tokens))
+            #data['parse'] = nlp_res['sentences'][0]['parse']
 
             sent_start_pos = item['position'][0]
 
@@ -235,19 +236,14 @@ def testOneFile():
     with StanfordCoreNLP('http://localhost', memory='8g', timeout=60000, lang="zh", port=9000) as nlp:
         # res = nlp.annotate('Donald John Trump is current president of the United States.', properties={'annotators': 'tokenize,ssplit,pos,lemma,parse'})
         # print(res)
-        files = ['./data/ace_2005_td_v7/data/Chinese/wl/adj/GLOVEBX_20050117.0459',
-                 #'./data/ace_2005_td_v7/data/Chinese/bn/adj/CBS20001214.1000.1127',
-                 #'./data/ace_2005_td_v7/data/Chinese/bn/adj/CBS20001117.1000.0341',
-                 #'./data/ace_2005_td_v7/data/Chinese/bn/adj/CBS20001118.1000.0340',
-                 #'./data/ace_2005_td_v7/data/Chinese/bn/adj/CBS20001101.1000.0000',
-                 './data/ace_2005_td_v7/data/Chinese/wl/adj/LANGLANGGARGEN_20050124.1017']
+        files = ['./data/ace_2005_td_v7/data/Chinese/bn/adj/CTS20001005.1800.1458']
         withValue = True
         lang = 'zh'
         preprocessing('check', files, withValue, lang, nlp)
 
 if __name__ == '__main__':
-    #testOneFile()
-    #exit(0)
+    #  testOneFile()
+    #  exit(0)
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--data', help="Path of ACE2005 Chinese data", default='./data/ace_2005_td_v7/data/Chinese')
