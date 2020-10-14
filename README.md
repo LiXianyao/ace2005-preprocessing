@@ -231,3 +231,11 @@ Below is information about the amount of parsed data when using this project. It
 | Test     | 40        | 713           | 422           | 892             |  4226             |
 | Dev      | 30        | 875           | 492           | 933             |  4050             |
 | Train    | 529       | 14724         | 4312          | 7811             |   53045            |
+
+
+And for Chinese:
+|          | Documents    |  Sentences   |Triggers    | Arguments | Entity Mentions  |
+|-------   |--------------|--------------|------------|-----------|----------------- |
+| Test     | 64        | 557           | 305           | 796             |  3436             |
+| Dev      | 20        | 271           | 117           |254              |  1376             |
+| Train    | 549       | 5801         | 2826          | 6892             |   33680            |
