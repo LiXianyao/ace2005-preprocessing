@@ -1,0 +1,1012 @@
+[
+  {
+    "sentence": "因为违反了《选霸法》而入狱的前立法委员朱高政在坐牢了一个月之后，今天出狱。",
+    "golden-entity-mentions": [
+      {
+        "text": "朱高政",
+        "entity-type": "PER:Individual",
+        "start": 12,
+        "end": 13
+      },
+      {
+        "text": "前立法委员",
+        "entity-type": "PER:Individual",
+        "start": 9,
+        "end": 12
+      },
+      {
+        "text": "违反了《选霸法",
+        "entity-type": "Crime",
+        "start": 1,
+        "end": 5
+      },
+      {
+        "text": "一个月",
+        "entity-type": "TIM:time",
+        "start": 16,
+        "end": 19
+      },
+      {
+        "text": "今天",
+        "entity-type": "TIM:time",
+        "start": 21,
+        "end": 22
+      }
+    ],
+    "golden-event-mentions": [
+      {
+        "trigger": {
+          "text": "入狱",
+          "start": 7,
+          "end": 8
+        },
+        "arguments": [
+          {
+            "role": "Person",
+            "entity-type": "PER:Individual",
+            "text": "朱高政",
+            "start": 12,
+            "end": 13
+          },
+          {
+            "role": "Crime",
+            "entity-type": "Crime",
+            "text": "违反了《选霸法》",
+            "start": 1,
+            "end": 6
+          }
+        ],
+        "event_type": "Justice:Arrest-Jail"
+      },
+      {
+        "trigger": {
+          "text": "坐牢",
+          "start": 14,
+          "end": 15
+        },
+        "arguments": [
+          {
+            "role": "Person",
+            "entity-type": "PER:Individual",
+            "text": "朱高政",
+            "start": 12,
+            "end": 13
+          },
+          {
+            "role": "Crime",
+            "entity-type": "Crime",
+            "text": "违反了《选霸法》",
+            "start": 1,
+            "end": 6
+          },
+          {
+            "role": "Time-Holds",
+            "entity-type": "TIM:time",
+            "text": "一个月",
+            "start": 16,
+            "end": 19
+          },
+          {
+            "role": "Time-Ending",
+            "entity-type": "TIM:time",
+            "text": "今天",
+            "start": 21,
+            "end": 22
+          }
+        ],
+        "event_type": "Justice:Arrest-Jail"
+      }
+    ],
+    "file": "./data/ace_2005_td_v7/data/Chinese/bn/adj/CTS20001005.1800.1458",
+    "words": [
+      "因为",
+      "违反",
+      "了",
+      "《",
+      "选霸法",
+      "》",
+      "而",
+      "入狱",
+      "的",
+      "前",
+      "立法",
+      "委员",
+      "朱高政",
+      "在",
+      "坐牢",
+      "了",
+      "一",
+      "个",
+      "月",
+      "之后",
+      "，",
+      "今天",
+      "出狱",
+      "。"
+    ],
+    "pos-tags": [
+      "P",
+      "VV",
+      "AS",
+      "PU",
+      "NN",
+      "PU",
+      "MSP",
+      "VV",
+      "DEC",
+      "JJ",
+      "NN",
+      "NN",
+      "NR",
+      "P",
+      "VV",
+      "AS",
+      "CD",
+      "M",
+      "NN",
+      "LC",
+      "PU",
+      "NT",
+      "VV",
+      "PU"
+    ]
+  },
+  {
+    "sentence": "不过他不改以前的本色，刚出了牢门口立刻开始大谈尹清风案的内幕。",
+    "golden-entity-mentions": [
+      {
+        "text": "尹清风",
+        "entity-type": "PER:Individual",
+        "start": 14,
+        "end": 15
+      },
+      {
+        "text": "他",
+        "entity-type": "PER:Individual",
+        "start": 1,
+        "end": 2
+      },
+      {
+        "text": "牢",
+        "entity-type": "FAC:Building-Grounds",
+        "start": 10,
+        "end": 11
+      },
+      {
+        "text": "以前",
+        "entity-type": "TIM:time",
+        "start": 3,
+        "end": 4
+      }
+    ],
+    "golden-event-mentions": [
+      {
+        "trigger": {
+          "text": "出",
+          "start": 8,
+          "end": 9
+        },
+        "arguments": [
+          {
+            "role": "Artifact",
+            "entity-type": "PER:Individual",
+            "text": "他",
+            "start": 1,
+            "end": 2
+          },
+          {
+            "role": "Origin",
+            "entity-type": "FAC:Building-Grounds",
+            "text": "牢",
+            "start": 10,
+            "end": 11
+          }
+        ],
+        "event_type": "Movement:Transport"
+      }
+    ],
+    "file": "./data/ace_2005_td_v7/data/Chinese/bn/adj/CTS20001005.1800.1458",
+    "words": [
+      "不过",
+      "他",
+      "不改",
+      "以前",
+      "的",
+      "本色",
+      "，",
+      "刚",
+      "出",
+      "了",
+      "牢门口",
+      "立刻",
+      "开始",
+      "大谈",
+      "尹清风",
+      "案",
+      "的",
+      "内幕",
+      "。"
+    ],
+    "pos-tags": [
+      "AD",
+      "PN",
+      "VV",
+      "NT",
+      "DEG",
+      "NN",
+      "PU",
+      "AD",
+      "VV",
+      "AS",
+      "NN",
+      "AD",
+      "VV",
+      "VV",
+      "NR",
+      "NN",
+      "DEG",
+      "NN",
+      "PU"
+    ]
+  },
+  {
+    "sentence": "前立委朱高政今天上午步出桃源监狱时神情显得相当愉快，外传朱高政与海心弊案关系人图太太交往密切，因此对于尹清风命案有一定程度的了解；不过朱高政对于这个敏感问题却是一再的回避，不愿意正面答复，而他还甚至替图太太来辩白。",
+    "golden-entity-mentions": [
+      {
+        "text": "尹清风",
+        "entity-type": "PER:Individual",
+        "start": 27,
+        "end": 28
+      },
+      {
+        "text": "朱高政",
+        "entity-type": "PER:Individual",
+        "start": 2,
+        "end": 3
+      },
+      {
+        "text": "前立委",
+        "entity-type": "PER:Individual",
+        "start": 0,
+        "end": 2
+      },
+      {
+        "text": "朱高政",
+        "entity-type": "PER:Individual",
+        "start": 15,
+        "end": 16
+      },
+      {
+        "text": "朱高政",
+        "entity-type": "PER:Individual",
+        "start": 36,
+        "end": 37
+      },
+      {
+        "text": "他",
+        "entity-type": "PER:Individual",
+        "start": 53,
+        "end": 54
+      },
+      {
+        "text": "桃源监狱",
+        "entity-type": "FAC:Building-Grounds",
+        "start": 6,
+        "end": 8
+      },
+      {
+        "text": "海心弊案关系人",
+        "entity-type": "PER:Individual",
+        "start": 17,
+        "end": 20
+      },
+      {
+        "text": "图太太",
+        "entity-type": "PER:Individual",
+        "start": 57,
+        "end": 59
+      },
+      {
+        "text": "图太太",
+        "entity-type": "PER:Individual",
+        "start": 20,
+        "end": 22
+      },
+      {
+        "text": "图",
+        "entity-type": "PER:Individual",
+        "start": 20,
+        "end": 21
+      },
+      {
+        "text": "图",
+        "entity-type": "PER:Individual",
+        "start": 57,
+        "end": 58
+      },
+      {
+        "text": "今天上午",
+        "entity-type": "TIM:time",
+        "start": 3,
+        "end": 5
+      }
+    ],
+    "golden-event-mentions": [
+      {
+        "trigger": {
+          "text": "步出",
+          "start": 5,
+          "end": 6
+        },
+        "arguments": [
+          {
+            "role": "Artifact",
+            "entity-type": "PER:Individual",
+            "text": "朱高政",
+            "start": 2,
+            "end": 3
+          },
+          {
+            "role": "Origin",
+            "entity-type": "FAC:Building-Grounds",
+            "text": "桃源监狱",
+            "start": 6,
+            "end": 8
+          },
+          {
+            "role": "Time-Within",
+            "entity-type": "TIM:time",
+            "text": "今天上午",
+            "start": 3,
+            "end": 5
+          }
+        ],
+        "event_type": "Movement:Transport"
+      }
+    ],
+    "file": "./data/ace_2005_td_v7/data/Chinese/bn/adj/CTS20001005.1800.1458",
+    "words": [
+      "前",
+      "立委",
+      "朱高政",
+      "今天",
+      "上午",
+      "步出",
+      "桃源",
+      "监狱",
+      "时",
+      "神情",
+      "显得",
+      "相当",
+      "愉快",
+      "，",
+      "外传",
+      "朱高政",
+      "与",
+      "海心",
+      "弊案",
+      "关系人",
+      "图",
+      "太太",
+      "交往",
+      "密切",
+      "，",
+      "因此",
+      "对于",
+      "尹清风",
+      "命案",
+      "有",
+      "一定",
+      "程度",
+      "的",
+      "了解",
+      "；",
+      "不过",
+      "朱高政",
+      "对于",
+      "这个",
+      "敏感",
+      "问题",
+      "却",
+      "是",
+      "一再",
+      "的",
+      "回避",
+      "，",
+      "不",
+      "愿意",
+      "正面",
+      "答复",
+      "，",
+      "而",
+      "他",
+      "还",
+      "甚至",
+      "替",
+      "图",
+      "太太",
+      "来",
+      "辩白",
+      "。"
+    ],
+    "pos-tags": [
+      "JJ",
+      "NN",
+      "NR",
+      "NT",
+      "NT",
+      "VV",
+      "NR",
+      "NN",
+      "LC",
+      "NN",
+      "VV",
+      "AD",
+      "VA",
+      "PU",
+      "VV",
+      "NR",
+      "CC",
+      "NN",
+      "NN",
+      "NN",
+      "NN",
+      "NN",
+      "VV",
+      "VA",
+      "PU",
+      "AD",
+      "P",
+      "NR",
+      "NN",
+      "VE",
+      "JJ",
+      "NN",
+      "DEG",
+      "NN",
+      "PU",
+      "AD",
+      "NR",
+      "P",
+      "DT",
+      "JJ",
+      "NN",
+      "AD",
+      "VC",
+      "AD",
+      "DEV",
+      "VV",
+      "PU",
+      "AD",
+      "VV",
+      "AD",
+      "VV",
+      "PU",
+      "AD",
+      "PN",
+      "AD",
+      "AD",
+      "P",
+      "NN",
+      "NN",
+      "MSP",
+      "VV",
+      "PU"
+    ]
+  },
+  {
+    "sentence": "但是一触及敏感的话题朱高政仍然不改他快人快语的本性。",
+    "golden-entity-mentions": [
+      {
+        "text": "朱高政",
+        "entity-type": "PER:Individual",
+        "start": 6,
+        "end": 7
+      },
+      {
+        "text": "他",
+        "entity-type": "PER:Individual",
+        "start": 10,
+        "end": 11
+      }
+    ],
+    "golden-event-mentions": [],
+    "file": "./data/ace_2005_td_v7/data/Chinese/bn/adj/CTS20001005.1800.1458",
+    "words": [
+      "但是",
+      "一",
+      "触及",
+      "敏感",
+      "的",
+      "话题",
+      "朱高政",
+      "仍然",
+      "不",
+      "改",
+      "他",
+      "快人快语",
+      "的",
+      "本性",
+      "。"
+    ],
+    "pos-tags": [
+      "AD",
+      "AD",
+      "VV",
+      "JJ",
+      "DEG",
+      "NN",
+      "NR",
+      "AD",
+      "AD",
+      "VV",
+      "PN",
+      "VV",
+      "DEC",
+      "NN",
+      "PU"
+    ]
+  },
+  {
+    "sentence": "朱高政说：他当初冒着生命危险揭发弊案，但相关单位却透过媒体对他做不实的抨击。",
+    "golden-entity-mentions": [
+      {
+        "text": "相关单位",
+        "entity-type": "ORG:Government",
+        "start": 12,
+        "end": 14
+      },
+      {
+        "text": "媒体",
+        "entity-type": "ORG:Media",
+        "start": 16,
+        "end": 17
+      },
+      {
+        "text": "朱高政",
+        "entity-type": "PER:Individual",
+        "start": 0,
+        "end": 1
+      },
+      {
+        "text": "他",
+        "entity-type": "PER:Individual",
+        "start": 3,
+        "end": 4
+      },
+      {
+        "text": "他",
+        "entity-type": "PER:Individual",
+        "start": 18,
+        "end": 19
+      },
+      {
+        "text": "当初",
+        "entity-type": "TIM:time",
+        "start": 4,
+        "end": 5
+      }
+    ],
+    "golden-event-mentions": [],
+    "file": "./data/ace_2005_td_v7/data/Chinese/bn/adj/CTS20001005.1800.1458",
+    "words": [
+      "朱高政",
+      "说",
+      "：",
+      "他",
+      "当初",
+      "冒着",
+      "生命",
+      "危险",
+      "揭发",
+      "弊案",
+      "，",
+      "但",
+      "相关",
+      "单位",
+      "却",
+      "透过",
+      "媒体",
+      "对",
+      "他",
+      "做",
+      "不",
+      "实",
+      "的",
+      "抨击",
+      "。"
+    ],
+    "pos-tags": [
+      "NR",
+      "VV",
+      "PU",
+      "PN",
+      "AD",
+      "P",
+      "NN",
+      "NN",
+      "VV",
+      "NN",
+      "PU",
+      "AD",
+      "JJ",
+      "NN",
+      "AD",
+      "P",
+      "NN",
+      "P",
+      "PN",
+      "VV",
+      "AD",
+      "VA",
+      "DEC",
+      "NN",
+      "PU"
+    ]
+  },
+  {
+    "sentence": "“我在这里要讲，海军总步兵透过部分媒体对我做不实的抨击，所以海军总部才是真正的要害所在。",
+    "golden-entity-mentions": [
+      {
+        "text": "部分媒体",
+        "entity-type": "ORG:Media",
+        "start": 11,
+        "end": 13
+      },
+      {
+        "text": "海军总步兵",
+        "entity-type": "ORG:Government",
+        "start": 7,
+        "end": 10
+      },
+      {
+        "text": "海军",
+        "entity-type": "ORG:Government",
+        "start": 7,
+        "end": 8
+      },
+      {
+        "text": "海军",
+        "entity-type": "ORG:Government",
+        "start": 22,
+        "end": 23
+      },
+      {
+        "text": "我",
+        "entity-type": "PER:Individual",
+        "start": 1,
+        "end": 2
+      },
+      {
+        "text": "我",
+        "entity-type": "PER:Individual",
+        "start": 14,
+        "end": 15
+      },
+      {
+        "text": "海军总部",
+        "entity-type": "ORG:Government",
+        "start": 22,
+        "end": 24
+      }
+    ],
+    "golden-event-mentions": [],
+    "file": "./data/ace_2005_td_v7/data/Chinese/bn/adj/CTS20001005.1800.1458",
+    "words": [
+      "“",
+      "我",
+      "在",
+      "这里",
+      "要",
+      "讲",
+      "，",
+      "海军",
+      "总",
+      "步兵",
+      "透过",
+      "部分",
+      "媒体",
+      "对",
+      "我",
+      "做",
+      "不",
+      "实",
+      "的",
+      "抨击",
+      "，",
+      "所以",
+      "海军",
+      "总部",
+      "才",
+      "是",
+      "真正",
+      "的",
+      "要害",
+      "所在",
+      "。"
+    ],
+    "pos-tags": [
+      "PU",
+      "PN",
+      "P",
+      "PN",
+      "VV",
+      "VV",
+      "PU",
+      "NN",
+      "JJ",
+      "NN",
+      "P",
+      "CD",
+      "NN",
+      "P",
+      "PN",
+      "VV",
+      "AD",
+      "VA",
+      "DEC",
+      "NN",
+      "PU",
+      "AD",
+      "NN",
+      "NN",
+      "AD",
+      "VC",
+      "JJ",
+      "DEG",
+      "NN",
+      "NN",
+      "PU"
+    ]
+  },
+  {
+    "sentence": "”他更指出旧政府高层才是尹案的幕后主使，而尹清风只不过是代罪羔羊罢了。",
+    "golden-entity-mentions": [
+      {
+        "text": "旧政府高层",
+        "entity-type": "PER:Indeterminate",
+        "start": 4,
+        "end": 7
+      },
+      {
+        "text": "尹案的幕后主使",
+        "entity-type": "PER:Indeterminate",
+        "start": 9,
+        "end": 14
+      },
+      {
+        "text": "旧政府",
+        "entity-type": "ORG:Government",
+        "start": 4,
+        "end": 6
+      },
+      {
+        "text": "尹",
+        "entity-type": "PER:Individual",
+        "start": 9,
+        "end": 10
+      },
+      {
+        "text": "尹清风",
+        "entity-type": "PER:Individual",
+        "start": 16,
+        "end": 17
+      },
+      {
+        "text": "代罪羔羊",
+        "entity-type": "PER:Individual",
+        "start": 19,
+        "end": 20
+      },
+      {
+        "text": "他",
+        "entity-type": "PER:Individual",
+        "start": 1,
+        "end": 2
+      }
+    ],
+    "golden-event-mentions": [],
+    "file": "./data/ace_2005_td_v7/data/Chinese/bn/adj/CTS20001005.1800.1458",
+    "words": [
+      "”",
+      "他",
+      "更",
+      "指出",
+      "旧",
+      "政府",
+      "高层",
+      "才",
+      "是",
+      "尹",
+      "案",
+      "的",
+      "幕后",
+      "主使",
+      "，",
+      "而",
+      "尹清风",
+      "只不过",
+      "是",
+      "代罪羔羊",
+      "罢了",
+      "。"
+    ],
+    "pos-tags": [
+      "PU",
+      "PN",
+      "AD",
+      "VV",
+      "JJ",
+      "NN",
+      "NN",
+      "AD",
+      "VC",
+      "NR",
+      "NN",
+      "DEG",
+      "NN",
+      "VV",
+      "PU",
+      "AD",
+      "NR",
+      "AD",
+      "VC",
+      "NN",
+      "SP",
+      "PU"
+    ]
+  },
+  {
+    "sentence": "朱高政今天出狱之后还有支持者放鞭炮来迎接他，至于涉案牢犯朱高政的下一步会怎么走，他离去之前笑着说：“一切慢慢来，不急不急。",
+    "golden-entity-mentions": [
+      {
+        "text": "支持者",
+        "entity-type": "PER:Indeterminate",
+        "start": 6,
+        "end": 7
+      },
+      {
+        "text": "朱高政",
+        "entity-type": "PER:Individual",
+        "start": 0,
+        "end": 1
+      },
+      {
+        "text": "他",
+        "entity-type": "PER:Individual",
+        "start": 11,
+        "end": 12
+      },
+      {
+        "text": "朱高政",
+        "entity-type": "PER:Individual",
+        "start": 16,
+        "end": 17
+      },
+      {
+        "text": "涉案牢犯",
+        "entity-type": "PER:Individual",
+        "start": 14,
+        "end": 16
+      },
+      {
+        "text": "他",
+        "entity-type": "PER:Individual",
+        "start": 25,
+        "end": 26
+      },
+      {
+        "text": "今天",
+        "entity-type": "TIM:time",
+        "start": 1,
+        "end": 2
+      }
+    ],
+    "golden-event-mentions": [
+      {
+        "trigger": {
+          "text": "出狱",
+          "start": 2,
+          "end": 3
+        },
+        "arguments": [
+          {
+            "role": "Person",
+            "entity-type": "PER:Individual",
+            "text": "朱高政",
+            "start": 0,
+            "end": 1
+          }
+        ],
+        "event_type": "Justice:Release-Parole"
+      }
+    ],
+    "file": "./data/ace_2005_td_v7/data/Chinese/bn/adj/CTS20001005.1800.1458",
+    "words": [
+      "朱高政",
+      "今天",
+      "出狱",
+      "之后",
+      "还",
+      "有",
+      "支持者",
+      "放",
+      "鞭炮",
+      "来",
+      "迎接",
+      "他",
+      "，",
+      "至于",
+      "涉案",
+      "牢犯",
+      "朱高政",
+      "的",
+      "下",
+      "一",
+      "步",
+      "会",
+      "怎么",
+      "走",
+      "，",
+      "他",
+      "离去",
+      "之前",
+      "笑",
+      "着",
+      "说",
+      "：",
+      "“",
+      "一切",
+      "慢慢来",
+      "，",
+      "不",
+      "急",
+      "不",
+      "急",
+      "。"
+    ],
+    "pos-tags": [
+      "NR",
+      "NT",
+      "VV",
+      "LC",
+      "AD",
+      "VE",
+      "NN",
+      "VV",
+      "NN",
+      "MSP",
+      "VV",
+      "PN",
+      "PU",
+      "P",
+      "VV",
+      "NN",
+      "NR",
+      "DEG",
+      "DT",
+      "CD",
+      "NN",
+      "VV",
+      "AD",
+      "VV",
+      "PU",
+      "PN",
+      "VV",
+      "LC",
+      "VV",
+      "AS",
+      "VV",
+      "PU",
+      "PU",
+      "PN",
+      "AD",
+      "PU",
+      "AD",
+      "VA",
+      "AD",
+      "VA",
+      "PU"
+    ]
+  }
+]
